@@ -9,6 +9,5 @@ public interface IInteractable{
     public void getBack(Interactor interactor);
     public void setGUICamera();
     public void setCameraBack();
-    public void selectOptions(float value);
     public void finished(Interactor interactor);
 }

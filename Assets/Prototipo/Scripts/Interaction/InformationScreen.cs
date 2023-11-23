@@ -21,7 +21,7 @@ public class InformationScreen : MonoBehaviour, IInteractable {
 
     public int scoreValue;
 
-    public bool watchableAgain = true;            
+    public bool watchableAgain = true;
 
     //Totem content attributes
 
@@ -33,15 +33,20 @@ public class InformationScreen : MonoBehaviour, IInteractable {
 
     //public ToggleGroup options;
     public GameObject options;
+
+    private GameObject contents;
+
     //public Toggle correctOne;
 
     public void Start() {
         camera.SetActive(false);
-    } 
+
+        contents = gameObject.transform.Find("Contents").gameObject;
+
+    }
 
     public void Update() {
         // Sets the indicator color if done or on
-
     }
 
     public void Interact(Interactor interactor) {
@@ -49,9 +54,8 @@ public class InformationScreen : MonoBehaviour, IInteractable {
         var eventSystem = EventSystem.current;
 
         //the player can enter to the totem screen if the previous one was completed
-        if( main.isDoneStage(stageNumber-1) == true) {
-            if (main.getStepStatus(stageNumber, stepNumber - 1) == true)
-            {
+        if (main.isDoneStage(stageNumber - 1) == true) {
+            if (main.getStepStatus(stageNumber, stepNumber - 1) == true) {
                 // If is not finished, player enters, else if is re-watchable the user could enter again too
                 if (main.getStepStatus(stageNumber, stepNumber) == false) {
 
@@ -70,23 +74,25 @@ public class InformationScreen : MonoBehaviour, IInteractable {
                         setGUICamera();
 
                         // Lock UI controls
-                        
+
 
                         // We switch the input action map to the one for interactingwith totems
                         playerInput.SwitchCurrentActionMap("StepInteraction");
                     }
                 }
             } else {
-                Debug.Log("You must complete the previous STEP first to enter to this totem.");
+                main.informationMsg("You must complete the previous STEP first to enter to this totem.");
+                //Debug.Log("You must complete the previous STEP first to enter to this totem.");
             }
         } else {
-            Debug.Log("You must complete the previous STAGE fist to enter to this totem.");
+            main.informationMsg("You must complete the previous STAGE fist to enter to this totem.");
+            //Debug.Log("You must complete the previous STAGE fist to enter to this totem.");
         }
     }
 
     public void getBack(Interactor interactor) {
         PlayerInput playerInput = interactor.GetComponent<PlayerInput>();
-        
+
         // Set the main camera
         setCameraBack();
 
@@ -97,10 +103,11 @@ public class InformationScreen : MonoBehaviour, IInteractable {
     }
 
     public void setGUICamera() {
+        CanvasGroup MyRenderer;
         camera.SetActive(true);
         prevCamera.SetActive(false);
     }
-    
+
     public void setCameraBack() {
         camera.SetActive(false);
         prevCamera.SetActive(true);
@@ -111,9 +118,9 @@ public class InformationScreen : MonoBehaviour, IInteractable {
         PlayerInput playerInput = interactor.GetComponent<PlayerInput>();
 
         // Detect if is multiple or single toggle selection, or none
-        if(main.getStepStatus(stageNumber, stepNumber) == false) {
+        if (main.getStepStatus(stageNumber, stepNumber) == false) {
             if (options) {
-                if(main.isMultiple(stageNumber, stepNumber)) {
+                if (main.isMultiple(stageNumber, stepNumber)) {
                     evaluateMultiple();
                     markDone();
                 } else {
@@ -123,25 +130,75 @@ public class InformationScreen : MonoBehaviour, IInteractable {
             } else {
                 markDone();
             }
- 
+
             // Sets the step number indicator color to yellow
             if (stepNumberImage != null) {
                 stepNumberImage.color = new Color(100, 100, 0, 255);
             }
         } else {
-            if(!watchableAgain) {
-                Debug.Log("You already completed this step, you can't change your answer!");
+            if (!watchableAgain) {
+                main.informationMsg("You already completed this step, you can't change your answer!");
+                //Debug.Log("You already completed this step, you can't change your answer!");
             }
         }
+
+        // Detect if is last step or stage 
+        verifyIfFinishedGame();
 
         setCameraBack();
         playerInput.SwitchCurrentActionMap("Player");
     }
-    public void selectOptions(float value) { }
+
+    // We call this when the user pressed the ok button
+    public void finishedNoQuestions(Interactor interactor) {
+        PlayerInput playerInput = interactor.GetComponent<PlayerInput>();
+
+        // Detect if is multiple or single toggle selection, or none
+        if(main.getStepStatus(stageNumber, stepNumber) == false) {
+                    markDone();
+                    main.setStepTotalScore(this.stageNumber, this.stepNumber, scoreValue);
+
+            // Sets the step number indicator color to yellow
+            if(stepNumberImage != null) {
+                stepNumberImage.color = new Color(100, 100, 0, 255);
+            }
+        } else {
+            if(!watchableAgain) {
+                main.informationMsg("You already completed this step, you can't change your answer!");
+                //Debug.Log("You already completed this step, you can't change your answer!");
+            }
+        }
+
+        // Detect if is last step or stage 
+        verifyIfFinishedGame();
+
+        setCameraBack();
+        playerInput.SwitchCurrentActionMap("Player");
+    }
+
+    public void verifyIfFinishedGame() {
+        if (stepNumber == main.getStepSize(stageNumber) - 1) {
+            main.informationMsg("Congratulations, you've finished the stage! :-)");
+            unlockFloor(stageNumber + 1);
+            //Debug.Log("You finished the STAGE!.");
+            Debug.Log("Total number of stages: " + main.getStagesSize());
+            if (stageNumber == main.getStagesSize() - 1) {
+                main.informationMsg("Congratulations, you've finished the game! :-)");
+                main.showScoreboard();
+
+            }
+        }
+
+        // Detect if is last stage
+    }
+
+    public void unlockFloor(int stageNumber) {
+        main.unlockFloor(stageNumber);
+    }
 
     // Evaluate a multiple selection question
     public void evaluateMultiple() {
-        
+
         //Toggle selectedOption = options.ActiveToggles().FirstOrDefault();
     }
 
@@ -153,15 +210,15 @@ public class InformationScreen : MonoBehaviour, IInteractable {
     public void evaluateSingle() {
         ToggleGroup optionGroup = options.GetComponent<ToggleGroup>();
         Toggle selectedOption;
-        
+
         // TODO : Validate if ToggleGroup Script is enabled
 
-        if(optionGroup != null) {
+        if (optionGroup != null) {
             selectedOption = optionGroup.ActiveToggles().FirstOrDefault();
 
             List<Question> correctOnes = main.getCorrectQuestions(stageNumber, stepNumber);
 
-            if(correctOnes != null) {
+            if (correctOnes != null) {
                 if (correctOnes[0].getQuestion().Equals(selectedOption.GetComponentInChildren<Text>().text)) {
                     main.setStepTotalScore(this.stageNumber, this.stepNumber, scoreValue);
                 } else {
@@ -172,6 +229,12 @@ public class InformationScreen : MonoBehaviour, IInteractable {
             }
         }
     }
+
+    public IEnumerator fadeOutCoroutine(CanvasGroup canvsaGroup, float duration) {
+        return null;
+    }
+
+    public IEnumerator waitCoroutine(float duration) {  return null; }
 
     // Sends answer to the model
     public bool sendAnswer() {

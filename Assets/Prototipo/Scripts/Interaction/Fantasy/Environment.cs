@@ -15,6 +15,10 @@ namespace Library {
             this.player = new Player();
         }
 
+        public int getCurrentStage() {
+            return this.stages.getCurrentStage();
+        }
+
         public Stages getStages() {
             return this.stages;
         }
@@ -111,6 +115,14 @@ namespace Library {
             this.stages.calculateFinalScore();
         }
 
+        public int getTotalScore() {
+            return this.stages.getTotalScore();   
+        }
+
+        public int getScoreValue() {
+            return this.stages.getScoreValue();
+        }
+
         // Sets the score goal of a step, this method is usually called after a new step is created
         public void setStepScoreValue(int stageIndex, int stepIndex, int scoreValue) {
             this.getStage(stageIndex).setStepScoreValue(stepIndex, scoreValue);
@@ -133,7 +145,7 @@ namespace Library {
             return this.player;
         }
 
-        // Question stuff
+        // Step Question stuff
 
         // Getters
 
@@ -175,7 +187,121 @@ namespace Library {
             this.stages.removeQuestion(stageIndex, stepIndex, questionIndex);
         }
 
+        //======================================================
+        // Receptionist and Tips stuff
+        //
+        // Getters
 
+        public int getRQsize(int stageIndex) {
+            return this.stages.getRQsize(stageIndex);
+        }
 
+        public List<SelectCorrect> getRQList(int stageIndex) {
+            return this.stages.getRQList(stageIndex);
+        }
+
+        public List<Question> getRQItems(int stageIndex, int listIndex) {
+            return this.stages.getRQItems(stageIndex, listIndex);
+        }
+
+        public List<Question> getCorrectRQs(int stageIndex, int listIndex) {
+            return this.stages.getCorrectRQs(stageIndex, listIndex);
+        }
+
+        public string getRQTitle(int stageIndex, int listIndex) {
+            return this.stages.getRQTitle(stageIndex, listIndex);
+        }
+
+        public Question getRQ(int stageIndex, int listIndex, int questionIndex) {
+            return this.stages.getRQ(stageIndex, listIndex, questionIndex);
+        }
+
+        public bool isRQCorrect(int stageIndex, int listIndex, int questionIndex) {
+            return this.stages.isRQCorrect(stageIndex, listIndex, questionIndex);
+        }
+
+        public string getRQString(int stageIndex, int listIndex, int questionIndex) {
+            return this.stages.getRQString(stageIndex, listIndex, questionIndex);
+        }
+
+        public bool isRQMultiple(int stageIndex, int listIndex) {
+            return this.stages.isRQMultiple(stageIndex, listIndex);
+        }
+
+        // Setters
+
+        public void setRQs(int stageIndex, int listIndex, List<Question> questions) {
+            this.stages.setRQs(stageIndex, listIndex, questions);
+        }
+
+        public void setRQValue(int stageIndex, int listIndex, int index, bool value) {
+            this.stages.setRQValue(stageIndex, listIndex, index, value);
+        }
+        public void setRQ(int stageIndex, int listIndex, int index, string question) {
+            this.stages.setRQ(stageIndex, listIndex, index, question);
+        }
+
+        // Methods
+
+        public void setRQTitle(int stageIndex, int listIndex, string title) {
+            this.stages.setRQTitle(stageIndex, listIndex, title);
+        }
+
+        public void addRQ(int stageIndex, int listIndex, string question, bool isCorrect) {
+            this.stages.addRQ(stageIndex, listIndex, question, isCorrect);
+        }
+
+        public void removeRQ(int stageIndex, int listIndex, int index) {
+            this.stages.removeRQ(stageIndex, listIndex, index);
+        }
+
+        //===========================================================
+        // TIPS
+
+        public void setTips(int stageIndex, List<Tips> list) {
+            this.stages.setTips(stageIndex, list);
+        }
+
+        public List<Tips> getTips(int stageIndex) {
+            return this.stages.getTips(stageIndex);
+        }
+
+        public Tips getTip(int stageIndex, int index) {
+            return this.stages.getTip(stageIndex, index);
+        }
+
+        public void addTip(int stageIndex, Tips tip) {
+            this.stages.addTip(stageIndex, tip);
+        }
+
+        public void removeTip(int stageIndex, int index) {
+            this.stages.removeTip(stageIndex, index);
+        }
+
+        // Setters and getters
+
+        public int getTipId(int stageIndex, int index) {
+            return this.stages.getTipId(stageIndex, index);
+        }
+
+        public string getTipTitle(int stageIndex, int index) {
+            return this.stages.getTipTitle(stageIndex, index);
+        }
+
+        public string getTipString(int stageIndex, int index) {
+            return this.stages.getTipString(stageIndex, index);
+        }
+
+        public void setTipId(int stageIndex, int index, int id) {
+            this.stages.setTipId(stageIndex, index, id);
+        }
+
+        public void setTipTitle(int stageIndex, int index, string title) {
+            this.stages.setTipTitle(stageIndex, index, title);
+        }
+
+        public void setTipString(int stageIndex, int index, string tipString) {
+            this.stages.setTipString(stageIndex, index, tipString);
+        }
     }
 }

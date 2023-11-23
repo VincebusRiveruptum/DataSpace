@@ -2,22 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 using Library;
 
-public class Main : MonoBehaviour
-{
+public class Main : MonoBehaviour {
     public Environment environment;
+    public Canvas informationCanvas;
+    public List<GameObject> floorBarriers;
+    public GameObject scoreBoard;
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         environment = new Environment();
+        floorBarriers = getBarriers();
+        scoreBoard.SetActive(false);
 
         // Level 0 //////////////////
         addStage("Introduction", "Brief introduction about the game and their challenges.");
         addStepToStage(0, "Welcome", "First totem greeting the player");                            // Add steps to the stage
         setStageStepTotem(0, 0, GameObject.Find("Welcome"));                                       // Add totem to the stage
         setStepScoreValue(0, 0, 10);
+
+        addTip(0, new Tips(1, "Generic Tip 1", "This is a testing tip!"));
+        addTip(0, new Tips(2, "Generic Tip 2", "This is another testing tip! :-)"));
+        addTip(0, new Tips(3, "Generic Tip 3", "And another one..."));
 
         addStepToStage(0, "DataSpace Library", "Totem about the library");                          // Add steps to the stage
         setStageStepTotem(0, 1, GameObject.Find("DataSpace"));                                     // Add totem to the stage
@@ -32,18 +40,21 @@ public class Main : MonoBehaviour
         setStepScoreValue(0, 3, 10);
         // Level 1 //////////////////
         addStage("First-Level", "Player has to do certain tasks...");
+
         addStepToStage(1, "Generic Step 1", "Generic Step description.");                               // Add steps to the stage
         setStageStepTotem(1, 0, GameObject.Find("Generic 1-1"));
         setStepScoreValue(1, 0, 10);
         loadQuestionsToStep(1, 0, GameObject.Find("Generic 1-1"));
 
-        addStage("First-Level", "Player has to do certain tasks...");
+        addTip(1, new Tips(1, "Generic Tip 1", "This is a testing tip!"));
+        addTip(1, new Tips(2, "Generic Tip 2", "This is another testing tip! :-)"));
+        addTip(1, new Tips(3, "Generic Tip 3", "And another one..."));
+
         addStepToStage(1, "Generic Step 2", "Generic Step description.");                               // Add steps to the stage
         setStageStepTotem(1, 1, GameObject.Find("Generic 1-2"));
         setStepScoreValue(1, 1, 10);
         loadQuestionsToStep(1, 1, GameObject.Find("Generic 1-2"));
 
-        addStage("First-Level", "Player has to do certain tasks...");
         addStepToStage(1, "Generic Step 3", "Generic Step description.");                               // Add steps to the stage
         setStageStepTotem(1, 2, GameObject.Find("Generic 1-3"));
         setStepScoreValue(1, 2, 10);
@@ -51,6 +62,51 @@ public class Main : MonoBehaviour
         // Add totem to the stage
 
         // Level 2 //////////////////
+
+        addStage("Second-Level", "Player has to do certain tasks...");
+
+        addStepToStage(2, "Generic Step 1", "Generic Step description.");                               // Add steps to the stage
+        setStageStepTotem(2, 0, GameObject.Find("Generic 2-1"));
+        setStepScoreValue(2, 0, 10);
+        loadQuestionsToStep(2, 0, GameObject.Find("Generic 2-1"));
+
+        addTip(2, new Tips(1, "Generic Tip 1", "This is a testing tip!"));
+        addTip(2, new Tips(2, "Generic Tip 2", "This is another testing tip! :-)"));
+        addTip(2, new Tips(3, "Generic Tip 3", "And another one..."));
+
+        addStepToStage(2, "Generic Step 2", "Generic Step description.");                               // Add steps to the stage
+        setStageStepTotem(2, 1, GameObject.Find("Generic 2-2"));
+        setStepScoreValue(2, 1, 10);
+        loadQuestionsToStep(2, 1, GameObject.Find("Generic 2-2"));
+
+        addStepToStage(2, "Generic Step 3", "Generic Step description.");                               // Add steps to the stage
+        setStageStepTotem(2, 2, GameObject.Find("Generic 2-3"));
+        setStepScoreValue(2, 2, 10);
+        loadQuestionsToStep(2, 2, GameObject.Find("Generic 2-3"));
+
+        // Level 3 //////////////////
+
+        addStage("Third-Level", "Player has to do certain tasks...");
+
+        addStepToStage(3, "Generic Step 1", "Generic Step description.");                               // Add steps to the stage
+        setStageStepTotem(3, 0, GameObject.Find("Generic 3-1"));
+        setStepScoreValue(3, 0, 10);
+        loadQuestionsToStep(3, 0, GameObject.Find("Generic 3-1"));
+
+        addTip(3, new Tips(1, "Generic Tip 1", "This is a testing tip!"));
+        addTip(3, new Tips(2, "Generic Tip 2", "This is another testing tip! :-)"));
+        addTip(3, new Tips(3, "Generic Tip 3", "And another one..."));
+
+        addStepToStage(3, "Generic Step 2", "Generic Step description.");                               // Add steps to the stage
+        setStageStepTotem(3, 1, GameObject.Find("Generic 3-2"));
+        setStepScoreValue(3, 1, 10);
+        loadQuestionsToStep(3, 1, GameObject.Find("Generic 3-2"));
+
+        addStepToStage(3, "Generic Step 3", "Generic Step description.");                               // Add steps to the stage
+        setStageStepTotem(3, 2, GameObject.Find("Generic 3-3"));
+        setStepScoreValue(3, 2, 10);
+        loadQuestionsToStep(3, 2, GameObject.Find("Generic 3-3"));
+
         //   environment.addStage("Last-Level", "Player has to do certain tasks...");
         //   environment.addStepToStage(0, "Welcome", "First totem greeting the player");                            // Add steps to the stage
         //   environment.setStageStepTotem(0, 0, GameObject.Find("Welcome"););                                       // Add totem to the stage
@@ -58,8 +114,7 @@ public class Main : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         /*
         Debug.Log(environment.getPlayer().getCurrentStep());
         Debug.Log(environment.getTotemFromStep(0,0).name);
@@ -67,8 +122,11 @@ public class Main : MonoBehaviour
         Debug.Log(environment.getTotemFromStep(0, 2).name);
         Debug.Log(environment.getTotemFromStep(0, 3).name);
         */
-        Debug.Log("Step 0 from stage status : " + getStepStatus(0,0));
-        logStagesTotems();
+
+        Debug.Log(this.environment.getCurrentStage());
+
+        Debug.Log("Step 0 from stage status : " + getStepStatus(0, 0));
+        //logStagesTotems();
         logScores();
     }
 
@@ -80,21 +138,21 @@ public class Main : MonoBehaviour
 
         // use foreach instead of the index later...
         int i, j;
-        for (i = 0; i < environment.getStagesSize(); i++) {
+        for(i = 0; i < environment.getStagesSize(); i++) {
             Debug.Log("Stage " + i + " Name: " + environment.getStageName(i) + "\t" + "Description: " + environment.getStageDescription(i) + "Status : " + environment.isDoneStage(i) + "\n");
-            for (j=0; j < environment.getStepSize(i); j++) {
-                Debug.Log("\t" + "Step " + j + "\t" + "Title : " + environment.getStageStep(i,j).getTitle() + "\t" + "Status: " + environment.getStageStep(i,j).getStatus() ) ;
+            for(j = 0; j < environment.getStepSize(i); j++) {
+                Debug.Log("\t" + "Step " + j + "\t" + "Title : " + environment.getStageStep(i, j).getTitle() + "\t" + "Status: " + environment.getStageStep(i, j).getStatus());
             }
         }
     }
 
 
     public void logScores() {
-        int i = 0, j = 0;      
+        int i = 0, j = 0;
         foreach(Stage stage in environment.getStageList()) {
-            Debug.Log("Stage " + i + " total score : " + stage.getFinalScore() + "/" + stage.getScoreValue()) ;
+            Debug.Log("Stage " + i + " total score : " + stage.getFinalScore() + "/" + stage.getScoreValue());
             foreach(Step step in stage.getStepList()) {
-                Debug.Log("\tStep " + j + "'" + step.getTitle() + "'" + "\tScore: " + step.getTotalScore() + "/" + step.getScoreValue()) ;
+                Debug.Log("\tStep " + j + "'" + step.getTitle() + "'" + "\tScore: " + step.getTotalScore() + "/" + step.getScoreValue());
                 j++;
             }
             j = 0;
@@ -102,12 +160,17 @@ public class Main : MonoBehaviour
         }
     }
 
+
     public void setStepStatus(int stageIndex, int stepIndex, bool done) {
         environment.setStepStatus(stageIndex, stepIndex, done);
     }
 
     public bool getStepStatus(int stageIndex, int stepIndex) {
         return environment.getStepStatus(stageIndex, stepIndex);
+    }
+
+    public int getStepSize(int stageIndex) {
+        return this.environment.getStepSize(stageIndex);
     }
 
     public Stages getStages() {
@@ -156,6 +219,21 @@ public class Main : MonoBehaviour
 
     public void addStage(Stage stage) {
         this.environment.addStage(stage);
+
+
+    }
+
+    public void informationMsg(string msg) {
+
+        StartCoroutine(LevelUp(msg));
+    }
+
+    public IEnumerator LevelUp(string msg) {
+        informationCanvas.GetComponentInChildren<TMP_Text>().text = (msg);
+
+        yield return new WaitForSeconds(4f);
+        informationCanvas.GetComponentInChildren<TMP_Text>().text = ("");
+
     }
 
     public void addStage(string name, string description) {
@@ -203,6 +281,14 @@ public class Main : MonoBehaviour
     public void setStepTotalScore(int stageIndex, int stepIndex, int totalScore) {
         this.environment.getStage(stageIndex).setStepTotalScore(stepIndex, totalScore);
         this.environment.calculateFinalScore();
+    }
+
+    public int getTotalScore() {
+        return this.environment.getTotalScore();
+    }
+
+    public int getScoreValue() {
+        return this.environment.getScoreValue();
     }
 
     // Question Methods
@@ -268,19 +354,19 @@ public class Main : MonoBehaviour
                 // Then we get each toggle option and get its attributes to save to the model.
                 questionList = new List<Question>();
 
-                for (i = 0; i < options.transform.childCount; i++) {
+                for(i = 0; i < options.transform.childCount; i++) {
                     // "he-he, what a mess" , this needs to be optimized, because we could reuse the child object call, as it is being called two times...
 
                     status = options.transform.GetChild(i).gameObject.GetComponent<OptionProperty>();
 
-                    if (status) {
-                        questionList.Add( new Question(options.transform.GetChild(i).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text, status.isCorrect));
+                    if(status) {
+                        questionList.Add(new Question(options.transform.GetChild(i).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text, status.isCorrect));
                         //Debug.Log(options.transform.GetChild(i).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text + " " + status.isCorrect);
                     } else {
                         questionList.Add(new Question(options.transform.GetChild(i).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text, false));
                         //Debug.Log(options.transform.GetChild(i).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text + " False");
                     }
-                }   
+                }
 
                 // We got the question list, then we save it on the model
 
@@ -296,4 +382,148 @@ public class Main : MonoBehaviour
         }
     }
 
+    // Get list of floor barrier in the building
+    public List<GameObject> getBarriers() {
+        List<GameObject> barriers = new List<GameObject>();
+        GameObject floors = GameObject.Find("Floors");
+
+        for(int i = 0; i < floors.transform.childCount; i++) {
+            barriers.Add(floors.transform.GetChild(i).gameObject);
+        }
+
+        return barriers;
+    }
+
+    // Floor barrier unlocking
+    public void unlockFloor(int stageIndex) {
+        if(stageIndex < floorBarriers.Count) {
+            floorBarriers[stageIndex].gameObject.SetActive(false);
+        }
+    }
+
+    //======================================================
+    // Receptionist and Tips stuff
+    //
+    // Setters
+
+    public int getRQsize(int stageIndex) {
+        return this.environment.getRQsize(stageIndex);
+    }
+
+    public List<SelectCorrect> getRQList(int stageIndex) {
+        return this.environment.getRQList(stageIndex);
+    }
+
+    public List<Question> getRQItems(int stageIndex, int listIndex) {
+        return this.environment.getRQItems(stageIndex, listIndex);
+    }
+
+    public List<Question> getCorrectRQs(int stageIndex, int listIndex) {
+        return this.environment.getCorrectRQs(stageIndex, listIndex);
+    }
+
+    public string getRQTitle(int stageIndex, int listIndex) {
+        return this.environment.getRQTitle(stageIndex, listIndex);
+    }
+
+    public Question getRQ(int stageIndex, int listIndex, int questionIndex) {
+        return this.environment.getRQ(stageIndex, listIndex, questionIndex);
+    }
+
+    public bool isRQCorrect(int stageIndex, int listIndex, int questionIndex) {
+        return this.environment.isRQCorrect(stageIndex, listIndex, questionIndex);
+    }
+
+    public string getRQString(int stageIndex, int listIndex, int questionIndex) {
+        return this.environment.getRQString(stageIndex, listIndex, questionIndex);
+    }
+
+    public bool isRQMultiple(int stageIndex, int listIndex) {
+        return this.environment.isRQMultiple(stageIndex, listIndex);
+    }
+
+    // Setters
+
+    public void setRQs(int stageIndex, int listIndex, List<Question> questions) {
+        this.environment.setRQs(stageIndex, listIndex, questions);
+    }
+
+    public void setRQValue(int stageIndex, int listIndex, int index, bool value) {
+        this.environment.setRQValue(stageIndex, listIndex, index, value);
+    }
+    public void setRQ(int stageIndex, int listIndex, int index, string question) {
+        this.environment.setRQ(stageIndex, listIndex, index, question);
+    }
+
+    // Methods
+
+    public void setRQTitle(int stageIndex, int listIndex, string title) {
+        this.environment.setRQTitle(stageIndex, listIndex, title);
+    }
+
+    public void addRQ(int stageIndex, int listIndex, string question, bool isCorrect) {
+        this.environment.addRQ(stageIndex, listIndex, question, isCorrect);
+    }
+
+    public void removeRQ(int stageIndex, int listIndex, int index) {
+        this.environment.removeRQ(stageIndex, listIndex, index);
+    }
+
+    //===========================================================
+    // TIPS
+
+    public void setTips(int stageIndex, List<Tips> list) {
+        this.environment.setTips(stageIndex, list);
+    }
+
+    public List<Tips> getTips(int stageIndex) {
+        return this.environment.getTips(stageIndex);
+    }
+
+    public Tips getTip(int stageIndex, int index) {
+        return this.environment.getTip(stageIndex, index);
+    }
+
+    public void addTip(int stageIndex, Tips tip) {
+        this.environment.addTip(stageIndex, tip);
+    }
+
+    public void removeTip(int stageIndex, int index) {
+        this.environment.removeTip(stageIndex, index);
+    }
+
+    // Setters and getters
+
+    public int getTipId(int stageIndex, int index) {
+        return this.environment.getTipId(stageIndex, index);
+    }
+
+    public string getTipTitle(int stageIndex, int index) {
+        return this.environment.getTipTitle(stageIndex, index);
+    }
+
+    public string getTipString(int stageIndex, int index) {
+        return this.environment.getTipString(stageIndex, index);
+    }
+
+    public void setTipId(int stageIndex, int index, int id) {
+        this.environment.setTipId(stageIndex, index, id);
+    }
+
+    public void setTipTitle(int stageIndex, int index, string title) {
+        this.environment.setTipTitle(stageIndex, index, title);
+    }
+
+    public void setTipString(int stageIndex, int index, string tipString) {
+        this.environment.setTipString(stageIndex, index, tipString);
+    }
+    //=============================
+
+    public int getCurrentStage() {
+        return this.environment.getCurrentStage();
+    }
+
+    public void showScoreboard() {
+        this.scoreBoard.SetActive(true);
+    }
 }

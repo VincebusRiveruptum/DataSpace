@@ -36,7 +36,7 @@ namespace Library {
         }
 
         public int getTotalScore() {
-            return this.scoreValue;
+            return this.finalScore;
         }
 
         public Stage getStage(int index) {
@@ -53,6 +53,15 @@ namespace Library {
 
         public int getStagesSize() {
             return this.stageList.Count;
+        }
+
+        public int getCurrentStage() {
+            int i = 0;
+
+            while(this.stageList[i].isDone()) {
+                i++;
+            }
+            return i;
         }
 
         // Stage list methods
@@ -84,8 +93,8 @@ namespace Library {
         public void calculateScoreValue() {
             int scoreValue = 0;
             foreach (Stage stage in stageList) {
-                stage.calculateScoreValue();                                // Update score value of all steps on the stages
-                scoreValue = scoreValue + stage.getScoreValue();    // sum with previous sum
+                stage.calculateScoreValue();                                        // Update score value of all steps on the stages
+                scoreValue = scoreValue + stage.getScoreValue();                    // sum with previous sum
             }
             this.scoreValue = scoreValue;
         }
@@ -94,7 +103,7 @@ namespace Library {
         public void calculateFinalScore() {
             int finalScore = 0, doneStages = 0;
             foreach (Stage stage in stageList) {
-                if (stage.isDone() == true) {         // true is "stage done"
+                if (stage.isDone() == true) {                                       // true is "stage done"
                     finalScore = finalScore + stage.getFinalScore();
                     doneStages++;
                 }
@@ -102,15 +111,6 @@ namespace Library {
             }
             this.doneStages = doneStages;
             this.finalScore = finalScore;
-
-            // If the sum of all scores equal to the total value assigned, then the game is done
-            /*
-            if (this.finalScore >= this.scoreValue) {
-                this.done = true;
-            } else {
-                this.done = false;
-            }
-            */
         }
 
         // Returns true if all steps in stage "stageIndex" are done, returns false if not
@@ -125,8 +125,6 @@ namespace Library {
         // Sets an i step done from the list of stages.
         public void setStepStatus(int stageIndex, int stepIndex, bool done) {
             this.stageList[(int)stageIndex].setStepStatus(stepIndex, done);
-
-   
         }
 
         // Returns status of a "stepIndex" step from "stageIndex" stage.
@@ -150,7 +148,7 @@ namespace Library {
             this.calculateFinalScore();
         }
 
-        // Question stuff
+        // Step Question stuff
 
         // Getters
 
@@ -178,8 +176,6 @@ namespace Library {
             return this.stageList[stageIndex].isMultiple(stepIndex);
         }
 
-
-
         // Methods
 
         public void setQuestions(int stageIndex, int stepIndex, List<Question> questions) {
@@ -194,6 +190,122 @@ namespace Library {
             this.stageList[stageIndex].removeQuestion(stepIndex, questionIndex);
         }
 
+        //======================================================
+        // Receptionist and Tips stuff
+        //
+        // Setters
+
+        public int getRQsize(int stageIndex) {
+            return this.stageList[stageIndex].getRQsize();
+        }
+        
+        public List<SelectCorrect> getRQList(int stageIndex) {
+            return this.stageList[stageIndex].getRQList();
+        }
+
+        public List<Question> getRQItems(int stageIndex, int listIndex) {
+            return this.stageList[stageIndex].getRQItems(listIndex);
+        }
+
+        public List<Question> getCorrectRQs(int stageIndex, int listIndex) {
+            return this.stageList[stageIndex].getCorrectRQs(listIndex);
+        }
+
+        public string getRQTitle(int stageIndex, int listIndex) {
+            return this.stageList[stageIndex].getRQTitle(listIndex);
+        }
+
+        public Question getRQ(int stageIndex, int listIndex, int questionIndex) {
+            return this.stageList[stageIndex].getRQ(listIndex, questionIndex);
+        }
+
+        public bool isRQCorrect(int stageIndex, int listIndex, int questionIndex) {
+            return this.stageList[stageIndex].isRQCorrect(listIndex, questionIndex);
+        }
+
+        public string getRQString(int stageIndex, int listIndex, int questionIndex) {
+            return this.stageList[stageIndex].getRQString(listIndex, questionIndex);
+        }
+
+        public bool isRQMultiple(int stageIndex, int listIndex) {
+            return this.stageList[stageIndex].isRQMultiple(listIndex);
+        }
+
+        // Setters
+
+        public void setRQs(int stageIndex, int listIndex, List<Question> questions) {
+            this.stageList[stageIndex].setRQs(listIndex, questions);
+        }
+
+        public void setRQValue(int stageIndex, int listIndex, int index, bool value) {
+            this.stageList[stageIndex].setRQValue(listIndex, index, value);
+        }
+        public void setRQ(int stageIndex, int listIndex, int index, string question) {
+            this.stageList[stageIndex].setRQ(listIndex, index, question);
+        }
+
+        // Methods
+
+        public void setRQTitle(int stageIndex, int listIndex, string title) {
+            this.stageList[stageIndex].setRQTitle(listIndex, title);
+        }
+
+        public void addRQ(int stageIndex, int listIndex, string question, bool isCorrect) {
+            this.stageList[stageIndex].addRQ(listIndex, question, isCorrect);
+        }
+
+        public void removeRQ(int stageIndex, int listIndex, int index) {
+            this.stageList[stageIndex].removeRQ(listIndex, index);
+        }
+
+        //===========================================================
+        // TIPS
+
+        public void setTips(int stageIndex, List<Tips> list) {
+            this.stageList[stageIndex].setTips(list);
+        }
+
+        public List<Tips> getTips(int stageIndex) {
+            return this.stageList[stageIndex].getTips();
+        }
+
+        public Tips getTip(int stageIndex, int index) {
+            return this.stageList[stageIndex].getTip(index);
+        }
+
+        public void addTip(int stageIndex, Tips tip) {
+            this.stageList[stageIndex].addTip(tip);
+        }
+
+        public void removeTip(int stageIndex, int index) {
+            this.stageList[stageIndex].removeTip(index);
+        }
+
+        // Setters and getters
+
+        public int getTipId(int stageIndex, int index) {
+            return this.stageList[stageIndex].getId(index);
+        }
+
+        public string getTipTitle(int stageIndex, int index) {
+            return this.stageList[stageIndex].getTitle(index);
+        }
+
+        public string getTipString(int stageIndex, int index) {
+            return this.stageList[stageIndex].getTipString(index);
+        }
+
+        public void setTipId(int stageIndex, int index, int id) {
+            this.stageList[stageIndex].setId(index, id);
+        }
+
+        public void setTipTitle(int stageIndex, int index, string title) {
+            this.stageList[stageIndex].setTitle(index, title);
+        }
+
+        public void setTipString(int stageIndex, int index, string tipString) {
+            this.stageList[stageIndex].setTipString(index, tipString);
+        }
 
     }
 }

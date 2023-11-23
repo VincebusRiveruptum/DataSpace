@@ -38,20 +38,6 @@ public class Interactor : MonoBehaviour {
         }
 
     }
-    /*
-    void OnFinishInteraction() {
-        Debug.Log("Finish selection keys!");
-    }
-    */
-    /*
-    void OnCancelInteraction() {
-        Debug.Log("Cancel selection keys!");
-        interactable.getBack(this);
-    }
-    */
-    public void OnOptionSelection(InputValue value) { 
-        //interactable.selectOptions(value.Get<Vector2>());
-    }
 
 
     private void OnDrawGizmos(){

@@ -38,4 +38,9 @@ public class NPCInteraction : MonoBehaviour, IInteractable {
     }
     public void finished(Interactor interactor) { }
 
+    public IEnumerator fadeOutCoroutine(CanvasGroup canvsaGroup, float duration) {
+        return null; 
+    }
+
+    public IEnumerator waitCoroutine(float duration) { return null; }   
 }

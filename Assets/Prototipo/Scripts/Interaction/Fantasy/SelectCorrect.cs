@@ -6,11 +6,19 @@ using Library;
 
 namespace Library {
     public class SelectCorrect{
+        private string title;
         private List<Question> questions;
 
         public SelectCorrect() {
+            this.title = "";
             this.questions = new List<Question>();
         }
+
+        public SelectCorrect(string title){
+            this.title = title;
+            this.questions = new List<Question>();
+        }
+
 
         // Setters
 
@@ -31,6 +39,10 @@ namespace Library {
         }
 
         // Getters
+
+        public string getTitle(){
+            return this.title;
+        }
 
         public List<Question> getQuestions() { 
             return this.questions;
@@ -95,6 +107,10 @@ namespace Library {
         }
 
         // Methods
+
+        public void setTitle(string title){
+            this.title = title;
+        }
         
         public void setQuestions(List<Question> questions) {
             this.questions = questions;
@@ -102,6 +118,10 @@ namespace Library {
 
         public void addQuestion(string question, bool isCorrect) {
             Question newOne = new Question(question, isCorrect);
+            this.questions.Add(newOne);
+        }
+
+        public void addQuestion(Question newOne) {
             this.questions.Add(newOne);
         }
 
