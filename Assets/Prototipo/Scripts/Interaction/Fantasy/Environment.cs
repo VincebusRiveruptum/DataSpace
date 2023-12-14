@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System;
 using UnityEngine;
-
 using Library;
 
 namespace Library {
@@ -10,9 +11,15 @@ namespace Library {
         private Stages stages;              // Game stages
         private Player player;              // Player properties and current stats
 
+        private Medals medals;
+
+        private List<Medal> finalMedals;
+
         public Environment() {
             this.stages = new Stages();
             this.player = new Player();
+            this.medals = new Medals();
+            this.finalMedals = new List<Medal>();
         }
 
         public int getCurrentStage() {
@@ -49,6 +56,17 @@ namespace Library {
 
         public int getStagesSize() {
             return this.stages.getStagesSize();
+        }
+
+        // Gets the number of all steps on all stages.
+        public int getTotalSteps() {
+            return this.stages.getTotalSteps();            
+        }
+
+        // Gets the number of all done steps on all stages.
+        public int getTotalDoneSteps() {
+
+            return this.stages.getTotalDoneSteps();
         }
 
         // Adding stages to the game
@@ -302,6 +320,184 @@ namespace Library {
 
         public void setTipString(int stageIndex, int index, string tipString) {
             this.stages.setTipString(stageIndex, index, tipString);
+        }
+
+        // Timer methods
+
+        public float getAnswerTime(int stageIndex, int stepIndex) {
+            return this.stages.getAnswerTime(stageIndex, stepIndex);
+        }
+
+        public void setAnswerTime(int stageIndex, int stepIndex, float answerTime) {
+            this.stages.setAnswerTime(stageIndex, stepIndex, answerTime);
+        }
+
+        // Question selected choices
+
+        public void setMarked(int stageIndex, int stepIndex, int questionIndex, bool isMarked) {
+            this.stages.setMarked(stageIndex,stepIndex, questionIndex, isMarked);
+        }
+
+        public void setMarkedOnes(int stageIndex, int stepIndex, List<Question> markedQuestions, bool isMarked) {
+            this.stages.setMarkedOnes(stageIndex, stepIndex, markedQuestions, isMarked);
+        }
+
+        public void setMarkedOnes(int stageIndex, int stepIndex, int questionIndex, int[] markedIndexes) {
+            this.stages.setMarkedOnes(stageIndex, stepIndex, questionIndex, markedIndexes);
+        }
+
+        // We get the marked questions list
+        public List<Question> getMarkedOnes(int stageIndex, int stepIndex, int questionIndex) {
+            return this.stages.getMarkedOnes(stageIndex, stepIndex, questionIndex);
+        }
+
+        public bool isSelectedAnswerCorrect(int stageIndex, int stepIndex) {
+            return this.stages.isSelectedAnswerCorrect(stageIndex,stepIndex);
+        }
+
+        // Medal stuff
+
+        public List<Medal> getMedalList() {
+            return this.medals.getMedalList();
+        }
+
+        public void setMedalList(List<Medal> medalList) {
+            this.medals.setMedalList(medalList);
+        }
+
+        public Medal getMedal(int medalIndex) {
+            return this.medals.getMedal(medalIndex);
+        }
+
+        public void addMedal(Medal medal) {
+            this.medals.addMedal(medal);
+        }
+
+        public void addMedal(string title, string description, int type) {
+            this.medals.addMedal(title, description, type);
+        }
+
+        public Medal removeMedal(int medalIndex) {
+            return this.medals.removeMedal(medalIndex);
+        }
+
+        public void setStageMedal(int stageIndex, List<Medal> medals) {
+            this.stages.setStageMedal(stageIndex, medals);
+        }
+
+        public Medal getStageMedal(int stageIndex, int medalIndex) {
+            return this.stages.getStageMedal(stageIndex, medalIndex);
+        }
+
+        public void addStageMedal(int stageIndex, Medal medal) {
+            this.stages.addStageMedal(stageIndex, medal);
+        }
+
+        public float getAvgAnswerTime(int stageIndex){
+                return this.stages.getAvgAnswerTime(stageIndex);
+        }
+
+        public void addFinalMedal(Medal medal) {
+            this.finalMedals.Add(medal);
+        }
+
+        public Medal getFinalMedal(int finalMedalIndex) {
+            if(this.finalMedals[finalMedalIndex] != null) {
+                return this.finalMedals[finalMedalIndex];
+            } else {
+                return null;
+            }
+        }
+
+        public Medal removeFinalMedal(int finalMedalIndex) {
+            Medal removedOne;
+            if(this.finalMedals[finalMedalIndex]    !=null) { 
+                removedOne = this.finalMedals[(int)finalMedalIndex];
+                this.finalMedals.RemoveAt(finalMedalIndex);
+                return removedOne;
+            } else {
+                return null;
+            }
+        }
+
+        // File operations
+
+        public void saveReport() {                  // Dumps internal model collected stats
+            string filepath = "report.csv";
+            DateTime now = DateTime.Now;
+
+            using(StreamWriter writer = new StreamWriter(new FileStream(filepath, FileMode.Create, FileAccess.Write))) {
+                writer.Write(now.ToString("yyyy-MM-dd") + ";");
+                writer.Write(this.player.getName() + ";" + this.player.getLastName() + ";" + this.player.getRut());
+
+                foreach(Stage stage in this.stages.getStageList()) {
+                    foreach(Step step in stage.getStepList()) {
+                        for(int i = 0; i < step.getQuestions().Count; i++) {
+                            if(step.isMarked(i) == true) {
+                                writer.Write(i + ";");
+                            }
+                        }
+                        writer.Write(step.getAnswerTime() + ";");
+                        writer.Write(step.getTotalScore() + ";");
+                        writer.Write(step.getScoreValue() + ";");
+                    }
+                    writer.Write(stage.getFinalScore() + ";");
+                }
+            }
+        }
+
+        public void saveMedalReport() {                  // Dumps internal model collected stats
+            string filepath = "player_medals.csv";
+            DateTime now = DateTime.Now;
+            int i = 0, stage;
+
+            
+
+            using(StreamWriter writer = new StreamWriter(new FileStream(filepath, FileMode.Create, FileAccess.Write))) {
+                for(i=0;i<10;i++) {
+                
+                    //DATE
+                    writer.Write(now.ToString("yyyy-MM-dd") + ";");
+                    //NAME
+                    writer.Write(this.player.getName() + this.player.getLastName() + ";");
+                    //RUT
+                    writer.Write(this.player.getRut() + ";");
+
+                    //'i' medal inside 'stage' STAGE
+                    for(stage=0;stage < (this.getStagesSize() - 1); stage++) {
+                        if(this.getStageMedal(stage,i) != null) {
+                            writer.Write((this.medals.getMedalList()).IndexOf(this.getStageMedal(stage,i)) + ";");
+                        } else {
+                            writer.Write("null;");
+                        }
+                    }
+                    /*
+                    //'i' final medal
+                    if(this.getFinalMedal(i) != null) {
+                        writer.Write(this.finalMedals.IndexOf(this.getFinalMedal(i)) + ";");
+                    } else {
+                        writer.Write("null;");
+                    }
+                    */
+                    writer.Write("\n");
+                }
+            }
+        }
+
+
+        public void saveMedalList() {                  // Dumps internal model collected stats
+            string filepath = "medals.csv";
+            int i = 0;
+
+            using(StreamWriter writer = new StreamWriter(new FileStream(filepath, FileMode.Create, FileAccess.Write))) {
+                for(i = 0; i < this.medals.getMedalList().Count; i++) {
+                    writer.Write( i +";");
+                    writer.Write(this.medals.getMedal(i).getTitle()+";");
+                    writer.Write(this.medals.getMedal(i).getDescription() + ";");
+                    writer.Write(this.medals.getMedal(i).getType() + ";");
+                    writer.Write("\n");
+                }
+            }
         }
     }
 }

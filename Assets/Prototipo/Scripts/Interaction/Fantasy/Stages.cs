@@ -57,12 +57,40 @@ namespace Library {
 
         public int getCurrentStage() {
             int i = 0;
+            int count = 0;
 
-            while(this.stageList[i].isDone()) {
-                i++;
+            for(i = 0; i < this.stageList.Count; i++) {
+                if(this.stageList[i].isDone()) {
+                    count++;
+                }
             }
-            return i;
+
+            return count;
+
         }
+
+        // Gets the number of all steps on all stages.
+        public int getTotalSteps() {
+            int acc = 0;
+
+            foreach(Stage stage in this.stageList) {
+                acc = acc + stage.getStepSize();
+            }
+
+            return acc;
+        }
+
+        // Gets the number of all done steps on all stages.
+        public int getTotalDoneSteps() {
+            int acc = 0;
+
+            foreach(Stage stage in this.stageList) {
+                acc = acc + stage.getDoneSteps();
+            }
+
+            return acc;
+        }
+
 
         // Stage list methods
 
@@ -307,5 +335,76 @@ namespace Library {
             this.stageList[stageIndex].setTipString(index, tipString);
         }
 
+        // Timer methods
+
+        public float getAnswerTime(int stageIndex, int stepIndex) {
+            return this.stageList[stageIndex].getAnswerTime(stepIndex);
+        }
+
+        public void setAnswerTime(int stageIndex, int stepIndex, float answerTime) {
+            this.stageList[stageIndex].setAnswerTime(stepIndex, answerTime);
+        }
+
+        // Question selected choices
+
+        public void setMarked(int stageIndex, int stepIndex, int questionIndex, bool isMarked) {
+            if(stageIndex > 0 && stageIndex < stageList.Count) {
+                this.stageList[stageIndex].setMarked(stepIndex, questionIndex, isMarked);
+            }
+        }
+
+        public void setMarkedOnes(int stageIndex, int stepIndex, int questionIndex, int[] markedIndexes) {
+            this.stageList[stageIndex].setMarkedOnes(stepIndex, questionIndex, markedIndexes);
+        }
+
+        public void setMarkedOnes(int stageIndex, int stepIndex, List<Question> markedQuestions, bool isMarked) {
+            this.stageList[stageIndex].setMarkedOnes(stepIndex, markedQuestions, isMarked);
+        }
+
+        // We get the marked questions list
+        public List<Question> getMarkedOnes(int stageIndex, int stepIndex, int questionIndex) {
+            return this.stageList[stageIndex].getMarkedOnes(stepIndex, questionIndex);
+        }
+
+        public bool isSelectedAnswerCorrect(int stageIndex, int stepIndex) {
+            return this.stageList[stageIndex].isSelectedAnswerCorrect(stepIndex);
+        }
+
+        //}
+
+        public float getAvgAnswerTime(int stageIndex) {
+            float acc = 0;
+            int i;
+
+            for(i = 0;i < stageList.Count; i++) {
+                acc = acc + stageList[i].getAvgStepAnswerTime();
+            }
+
+            acc = acc / stageList.Count; 
+
+            return acc;
+        }
+
+        // medals
+
+        public void setStageMedal(int stageIndex, List<Medal> medals) {
+            if(this.stageList[stageIndex] != null) {
+                this.stageList[stageIndex].setStageMedal(medals);
+            }
+        }
+
+        public void addStageMedal(int stageIndex, Medal medal) {
+            if(this.stageList[stageIndex] != null) {
+                this.stageList[stageIndex].addStageMedal(medal);
+            }
+        }
+
+        public Medal getStageMedal(int stageIndex, int medalIndex) {
+            if(this.stageList[stageIndex] != null) {
+                return this.stageList[stageIndex].getStageMedal(medalIndex);
+            } else {
+                return null;
+            }
+        }
     }
 }

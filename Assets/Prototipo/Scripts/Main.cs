@@ -11,12 +11,23 @@ public class Main : MonoBehaviour {
     public Canvas informationCanvas;
     public List<GameObject> floorBarriers;
     public GameObject scoreBoard;
+
+    public TMP_Text scoreText;
+    public TMP_Text completedText;
+
     // Start is called before the first frame update
     void Start() {
         environment = new Environment();
         floorBarriers = getBarriers();
         scoreBoard.SetActive(false);
 
+        if(informationCanvas != null) {
+            scoreText = informationCanvas.transform.Find("scoreText").gameObject.GetComponent<TMP_Text>();
+            completedText = informationCanvas.transform.Find("completedText").gameObject.GetComponent<TMP_Text>();
+        }
+
+
+        
         // Level 0 //////////////////
         addStage("Introduction", "Brief introduction about the game and their challenges.");
         addStepToStage(0, "Welcome", "First totem greeting the player");                            // Add steps to the stage
@@ -39,7 +50,8 @@ public class Main : MonoBehaviour {
         setStageStepTotem(0, 3, GameObject.Find("Loans"));                                         // Add totem to the stage
         setStepScoreValue(0, 3, 10);
         // Level 1 //////////////////
-        addStage("First-Level", "Player has to do certain tasks...");
+
+        addStage("Primer nivel", "Clases, arreglos y colecciones");
 
         addStepToStage(1, "Generic Step 1", "Generic Step description.");                               // Add steps to the stage
         setStageStepTotem(1, 0, GameObject.Find("Generic 1-1"));
@@ -59,11 +71,17 @@ public class Main : MonoBehaviour {
         setStageStepTotem(1, 2, GameObject.Find("Generic 1-3"));
         setStepScoreValue(1, 2, 10);
         loadQuestionsToStep(1, 2, GameObject.Find("Generic 1-3"));
+
+        addStepToStage(1, "Generic Step 4", "Generic Step description.");                               // Add steps to the stage
+        setStageStepTotem(1, 3, GameObject.Find("Generic 1-4"));
+        setStepScoreValue(1, 3, 10);
+        loadQuestionsToStep(1, 3, GameObject.Find("Generic 1-4"));
+
         // Add totem to the stage
 
         // Level 2 //////////////////
 
-        addStage("Second-Level", "Player has to do certain tasks...");
+        addStage("Segundo nivel", "Herencia");
 
         addStepToStage(2, "Generic Step 1", "Generic Step description.");                               // Add steps to the stage
         setStageStepTotem(2, 0, GameObject.Find("Generic 2-1"));
@@ -86,7 +104,7 @@ public class Main : MonoBehaviour {
 
         // Level 3 //////////////////
 
-        addStage("Third-Level", "Player has to do certain tasks...");
+        addStage("Tercer nivel", "Clases Abstractas e Interfaces");
 
         addStepToStage(3, "Generic Step 1", "Generic Step description.");                               // Add steps to the stage
         setStageStepTotem(3, 0, GameObject.Find("Generic 3-1"));
@@ -111,6 +129,21 @@ public class Main : MonoBehaviour {
         //   environment.addStepToStage(0, "Welcome", "First totem greeting the player");                            // Add steps to the stage
         //   environment.setStageStepTotem(0, 0, GameObject.Find("Welcome"););                                       // Add totem to the stage
 
+        // Setting-up medals
+
+        addMedal("Sospechosamente rápido", "El jugador responde las preguntas demasiado rápido (<1 seg entre totems)", 1);
+        addMedal("Velóz", "El jugador tiene un promedio de respuesta bastante rápido1", 1);
+        addMedal("Lento pero seguro", "El jugador responde de forma paulatina durante el juego", 1);
+        addMedal("Tortuga", "El jugador se demoró bastante en responder las preguntas en el nivel ", 1);
+        addMedal("Maestro de Clases, Arreglos y colecciones", "El jugador respondió todas las preguntas correctamente del nivel uno a gran velocidad", 2);
+        addMedal("Maestro de la Herencia", "El jugador respondió todas las preguntas correctamente del nivel dos a gran velocidad", 2);
+        addMedal("Maestro de las Clases abstractas e interfaces", "El jugador respondió todas las preguntas correctamente del nivel tres a gran velocidad", 2);
+
+        addMedal("Buena Base", ("El jugador muestra buen dominio de los contenidos del primer nivel " + this.getStageDescription(1)),3);
+        addMedal("Mucho potencial", ("El jugador muestra buen dominio de los contenidos del segundo nivel" + this.getStageDescription(2)),3);
+        addMedal("Buen dominio", ("El jugador muestra buen dominio de los contenidos del tercer nivel" + this.getStageDescription(3)),3);
+        addMedal("Excelente dominio", "El jugador muestra buen dominio en todos los contenidos",3);
+
     }
 
     // Update is called once per frame
@@ -122,6 +155,10 @@ public class Main : MonoBehaviour {
         Debug.Log(environment.getTotemFromStep(0, 2).name);
         Debug.Log(environment.getTotemFromStep(0, 3).name);
         */
+
+        /* Real-time score feedback */
+
+        setInformationCanvas();
 
         Debug.Log(this.environment.getCurrentStage());
 
@@ -158,6 +195,12 @@ public class Main : MonoBehaviour {
             j = 0;
             i++;
         }
+    }
+
+    // Updates on-screen stats 
+    public void setInformationCanvas() {
+        scoreText.text = ("Puntuación : " + environment.getTotalScore() + "/" + environment.getScoreValue());
+        completedText.text = ("Tótems completados : " + environment.getTotalDoneSteps() + "/" + environment.getTotalSteps());
     }
 
 
@@ -526,4 +569,110 @@ public class Main : MonoBehaviour {
     public void showScoreboard() {
         this.scoreBoard.SetActive(true);
     }
+
+    // Timer methods
+
+    public float getAnswerTime(int stageIndex, int stepIndex) {
+        return this.environment.getAnswerTime(stageIndex, stepIndex);
+    }
+
+    public void setAnswerTime(int stageIndex, int stepIndex, float answerTime) {
+        this.environment.setAnswerTime(stageIndex, stepIndex, answerTime);
+    }
+
+    // Question selected choices
+
+    public void setMarked(int stageIndex, int stepIndex, int questionIndex, bool isMarked) {
+        this.environment.setMarked(stageIndex, stepIndex, questionIndex, isMarked);
+    }
+
+    public void setMarkedOnes(int stageIndex, int stepIndex, List<Question> markedQuestions, bool isMarked) {
+        this.environment.setMarkedOnes(stageIndex, stepIndex, markedQuestions, isMarked);
+    }
+
+    public void setMarkedOnes(int stageIndex, int stepIndex, int questionIndex, int[] markedIndexes) {
+        this.environment.setMarkedOnes(stageIndex, stepIndex, questionIndex, markedIndexes);
+    }
+
+    // We get the marked questions list
+    public List<Question> getMarkedOnes(int stageIndex, int stepIndex, int questionIndex) {
+        return this.environment.getMarkedOnes(stageIndex, stepIndex, questionIndex);
+    }
+
+    public bool isSelectedAnswerCorrect(int stageIndex, int stepIndex) {
+        return this.environment.isSelectedAnswerCorrect(stageIndex, stepIndex);
+    }
+
+    // ===================
+    // Medal stuff
+
+    public List<Medal> getMedalList() {
+        return this.environment.getMedalList();
+    }
+
+    public void setMedalList(List<Medal> medalList) {
+        this.environment.setMedalList(medalList);
+    }
+
+    public Medal getMedal(int medalIndex) {
+        return this.environment.getMedal(medalIndex);
+    }
+
+    public void addMedal(Medal medal) {
+        this.environment.addMedal(medal);
+    }
+    
+    public void addMedal(string title, string description, int type) {
+        this.environment.addMedal(title, description, type);
+    }
+    
+    public Medal removeMedal(int medalIndex) {
+        return this.environment.removeMedal(medalIndex);
+    }
+
+    public float getAvgAnswerTime(int stageIndex) {
+        return this.environment.getAvgAnswerTime(stageIndex);
+    }
+
+    public void setStageMedal(int stageIndex, List<Medal> medals) {
+        this.environment.setStageMedal(stageIndex, medals);
+    }
+
+    public Medal getStageMedal(int stageIndex, int medalIndex) {
+        return this.environment.getStageMedal(stageIndex, medalIndex);
+    }
+
+    public void addStageMedal(int stageIndex, Medal medal) {
+        this.environment.addStageMedal(stageIndex, medal);
+    }
+
+    // Final medals
+
+    public void addFinalMedal(Medal medal) {
+        this.environment.addFinalMedal(medal);
+    }
+
+    public Medal getFinalMedal(int finalMedalIndex) {
+        return this.environment.getFinalMedal(finalMedalIndex);
+    }
+
+    public Medal removeFinalMedal(int finalMedalIndex) {
+        return this.environment.removeFinalMedal(finalMedalIndex);
+    }
+
+
+    // Save report
+
+    public void saveReport() {
+        this.environment.saveReport();
+    }
+
+    public void saveMedalReport() {
+        this.environment.saveMedalReport();
+    }
+
+    public void saveMedalList() {
+        this.environment.saveMedalList();    
+    }
+
 }

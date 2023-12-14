@@ -39,6 +39,9 @@ public class ScoreTotem : MonoBehaviour, IInteractable{
         setGUICamera();
         setFinalScore();
 
+        main.saveReport();
+        main.saveMedalReport();
+        main.saveMedalList();
 
         // We switch the input action map to the one for interactingwith totems
         playerInput.SwitchCurrentActionMap("StepInteraction");

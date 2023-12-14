@@ -106,6 +106,14 @@ namespace Library {
 
         }
 
+
+
+
+        public bool isMarked(int index) {
+            return this.questions[index].isMarked(); 
+        }
+
+
         // Methods
 
         public void setTitle(string title){
@@ -128,5 +136,58 @@ namespace Library {
         public void removeQuestion(int index) { 
             this.questions.RemoveAt(index);
         }
+
+        // Question selected choices
+
+        public void setMarked(int index, bool isMarked) {
+            this.questions[index].setMarked(isMarked); 
+        }
+
+        public void setMarkedOnes(int index, int[] markedIndexes) {
+            for (int i = 0; i<markedIndexes.Length; i++) {
+                this.questions[markedIndexes[i]].setMarked(true);
+            }
+        }
+
+        public void setMarkedOnes(List<Question> markedQuestions, bool isMarked) {
+            for(int i = 0; i < questions.Count; i++) {
+                for(int j = 0; j < markedQuestions.Count; j++) {
+                    if(questions[i].getQuestion().Equals(markedQuestions[j].getQuestion())) {
+                        questions[i].setMarked(isMarked);
+                    }
+                }
+            }
+        }
+
+        public bool isSelectedAnswerCorrect() {
+            foreach(Question question in questions) {
+                if(question.isMarked()) {
+                    if(!(question.isCorrect())) {
+                        return false;  
+                    }
+                }
+            }
+            return true;
+        }      
+
+        // We get the marked questions list
+        public List<Question> getMarkedOnes(int index) {
+            int i;
+            List<Question> markedOnes;
+
+            if(this.questions.Count > 0) {
+                markedOnes = new List<Question>();
+
+                for(i=0;i<this.questions.Count; i++) {
+                    if(this.questions[i].isMarked() == true) {
+                        markedOnes.Add(this.questions[i]);
+                    }
+                }
+                return markedOnes;
+            } else {
+                return null;
+            }
+        }
+
     }
 }

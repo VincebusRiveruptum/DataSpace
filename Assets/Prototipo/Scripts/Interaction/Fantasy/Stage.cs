@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ namespace Library {
         private ReceptionQuestions rq;      // Receptionist questions according to the current stage
         private ReceptionTips rt;           // Receptionist tips according to the current stage
 
+        private List<Medal> medalList;
 
         private bool done;
 
@@ -31,6 +33,7 @@ namespace Library {
             this.finalScore = 0;
             this.doneSteps = 0;
             this.done = false;
+            this.medalList = new List<Medal>();
         }
 
         public Stage(string name, string description) {
@@ -43,6 +46,7 @@ namespace Library {
             this.finalScore = 0;
             this.doneSteps = 0;
             this.done = false;
+            this.medalList = new List<Medal>();
         }
 
         public string getName() {
@@ -374,5 +378,72 @@ namespace Library {
         public void setTipString(int index, string tipString) {
             this.rt.setTipString(index, tipString);
         }
+
+        // Timer methods
+
+        public float getAnswerTime(int stepIndex) { 
+            return this.stepList[stepIndex].getAnswerTime();
+        }
+
+        public float getAvgStepAnswerTime() {
+            float acc = 0;
+            int i;
+
+            for(i = 0; i < stepList.Count; i++) {
+                acc = acc + stepList[i].getAnswerTime();
+            }
+
+            acc = acc / stepList.Count;
+
+            return acc;       
+        }
+
+        public void setAnswerTime(int stepIndex, float answerTime) {
+            this.stepList[stepIndex].setAnswerTime(answerTime);
+        }
+
+        // Question selected choices
+
+        public void setMarked(int stepIndex, int questionIndex, bool isMarked) {
+            if(stepIndex > 0 && stepIndex < stepList.Count) {
+                this.stepList[stepIndex].setMarked(questionIndex, isMarked);
+            }
+        }
+
+        public void setMarkedOnes(int stepIndex, int questionIndex, int[] markedIndexes) {
+            this.stepList[stepIndex].setMarkedOnes(questionIndex, markedIndexes);
+        }
+
+        public void setMarkedOnes(int stepIndex, List<Question> markedQuestions, bool isMarked) {
+            this.stepList[stepIndex].setMarkedOnes(markedQuestions, isMarked);
+        }
+
+        public bool isSelectedAnswerCorrect(int stepIndex) {
+            return this.stepList[stepIndex].isSelectedAnswerCorrect();
+        }
+
+        // We get the marked questions list
+        public List<Question> getMarkedOnes(int stepIndex, int questionIndex) {
+            return this.stepList[stepIndex].getMarkedOnes(questionIndex);
+        }
+        
+        // Stage medals 
+        public void addStageMedal(Medal medal) {
+            this.medalList.Add(medal);
+        }
+
+        public void setStageMedal(List<Medal> medals) {
+            this.medalList = medals;
+        }
+
+        public Medal getStageMedal(int medalIndex) {
+            try {
+                return this.medalList[medalIndex];
+            } catch(Exception e) {
+                Debug.LogError(e.Message);
+                return null;
+            }
+        }  
+
     }
 }

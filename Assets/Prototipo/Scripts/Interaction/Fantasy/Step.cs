@@ -12,6 +12,8 @@ namespace Library {
         private int scoreValue;     // Score goal value of this totem 
         private int totalScore;     // Total gotten score
 
+        private float answerTime;   // Seconds the player took to answer the question
+
         private GameObject totem;
         /*
             Totems at the moment have hardcoded challenges or questions 
@@ -31,6 +33,7 @@ namespace Library {
             this.questions = new SelectCorrect();
             this.totem = null;
             this.scoreValue = 0;
+            this.answerTime = 0;
         }
 
         public Step() {
@@ -40,7 +43,12 @@ namespace Library {
             this.questions = new SelectCorrect();
             this.totem = null;
             this.scoreValue = 0;
+            this.answerTime = 0;
         }
+
+        public float getAnswerTime() {  return this.answerTime; }
+
+        public void setAnswerTime(float answerTime) {  this.answerTime = answerTime; }
 
         public string getTitle() {
             return this.title;
@@ -136,6 +144,10 @@ namespace Library {
             return this.questions.isMultiple();
         }
 
+        public bool isMarked(int index) {
+            return this.questions.isMarked(index);
+        }
+
         // Methods
 
 
@@ -151,5 +163,27 @@ namespace Library {
             this.questions.removeQuestion(index);
         }
 
+        // Question selected choices
+
+        public void setMarked(int questionIndex, bool isMarked) {
+            this.questions.setMarked(questionIndex, isMarked);
+        }
+
+        public void setMarkedOnes(int questionIndex, int[] markedIndexes) {    
+            this.questions.setMarkedOnes(questionIndex, markedIndexes);
+        }
+
+        public void setMarkedOnes(List<Question> markedQuestions, bool isMarked) {
+            this.questions.setMarkedOnes(markedQuestions, isMarked);
+        }
+
+        public bool isSelectedAnswerCorrect() {
+            return this.questions.isSelectedAnswerCorrect();
+        }
+
+        // We get the marked questions list
+        public List<Question> getMarkedOnes(int questionIndex) {
+            return this.questions.getMarkedOnes(questionIndex);
+        }
     }
 }
